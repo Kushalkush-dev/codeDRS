@@ -1,7 +1,7 @@
 "use client"
 import React from 'react'
 import { signOut } from '@/lib/auth-client'
-import { useRouter } from 'next/dist/client/components/navigation';
+import { useRouter } from 'next/navigation';
 
 
 const Logout = ({ children, className }: {
@@ -11,7 +11,7 @@ const Logout = ({ children, className }: {
 
     const router = useRouter();
     return (
-        <span onClick={() => signOut({
+        <button className={className} onClick={() => signOut({
             fetchOptions: {
                 onSuccess: () => {
                     router.push("/login")
@@ -19,7 +19,7 @@ const Logout = ({ children, className }: {
             }
         })}>
             {children}
-        </span>
+        </button>
     )
 }
 
