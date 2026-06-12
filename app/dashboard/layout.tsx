@@ -2,10 +2,12 @@ import AppSidebar from '@/components/app-siderbar'
 import { Separator } from '@/components/ui/separator'
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { requireAuth } from '@/modules/auth/utils/auth-utils'
 import React from 'react'
 
 
-const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
+const DashboardLayout =async ({ children }: { children: React.ReactNode }) => {
+    await requireAuth()
     return (
         <TooltipProvider>
           <SidebarProvider>
