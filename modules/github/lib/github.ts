@@ -35,19 +35,19 @@ export const fetchUserContribution = async (token: string, userName: string) => 
     const octokit = new Octokit({ auth: token })
 
     const query = `
-    query($Username:String!){
+    query($username:String!){
          user(login:$username){
-             contributionCollection{
-                 contributionCalendar{
-                     weeks{
-                         contributionDays{
-                            contributionCount
-                            data
-                            color
-                            }
-                        }
-                     }
-                }
+            contributionsCollection{
+                contributionCalendar{
+                    weeks{
+                        contributionDays{
+                           contributionCount
+                           date
+                           color
+                           }
+                       }
+                    }
+               }
             }
      }
     `
@@ -59,7 +59,21 @@ export const fetchUserContribution = async (token: string, userName: string) => 
             username: userName
         })
 
-        return response.user.contributionCollection.contributionCalender
+        const coll = response?.user?.contributionsCollection
+
+        if (!coll) return null
+
+        const weeks = coll.contributionCalendar?.weeks || []
+
+        const totalContributions = weeks.reduce((sum: number, week: any) => {
+            const days = week.contributionDays || []
+            return sum + days.reduce((s: number, d: any) => s + (d.contributionCount || 0), 0)
+        }, 0)
+
+        return {
+            totalContributions,
+            weeks
+        }
 
     } catch (error) {
         console.error("Error fetching user contribution data:", error);

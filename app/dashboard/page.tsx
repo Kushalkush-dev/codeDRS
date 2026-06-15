@@ -1,9 +1,11 @@
 "use client"
+
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { GitCommit, GitPullRequest, GitBranch, MessageSquare } from "lucide-react";
 import { useQuery } from "@tanstack/react-query"
 import { getDashboardStats, getMonthlyActivity } from '@/modules/dashboard/actions';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import ContributionGraph from "@/modules/dashboard/components/ContributionGraph";
 const MainPage = () => {
 
   const { data: stats, isLoading } = useQuery({
@@ -51,28 +53,38 @@ const MainPage = () => {
           </CardContent>
         </Card >
 
-          <Card>
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2" >
             <CardTitle className="text-sm font-medium">Total Prs</CardTitle>
             <GitBranch className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{isLoading ? " ... " : stats?.totalPRs || 0}</div>
-            <p className="text-xs text-muted-foreground">Total commits made</p>
+            <p className="text-xs text-muted-foreground">Total PRs made</p>
           </CardContent>
         </Card >
 
-          <Card>
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2" >
             <CardTitle className="text-sm font-medium">Ai Reviews</CardTitle>
             <GitBranch className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{isLoading ? " ... " : stats?.totalReviews || 0}</div>
-            <p className="text-xs text-muted-foreground">Total commits made</p>
+            <p className="text-xs text-muted-foreground">Total Ai Reviews</p>
           </CardContent>
         </Card >
       </div >
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Contribution Activity</CardTitle>
+          <CardDescription>Visualizing your coding frequency over the last year</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ContributionGraph />
+        </CardContent>
+      </Card>
     </div>
 
   )
