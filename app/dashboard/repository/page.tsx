@@ -4,9 +4,10 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { RepositoryListSkeleton } from '@/modules/repository/components/RepositorySkeletonList'
 import useRepositories from '@/modules/repository/hooks/use-repositories'
 import { ExternalLink, Search, Star } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 
 const RepositoryPage = () => {
@@ -27,6 +28,14 @@ const RepositoryPage = () => {
     const [searchQuery, setsearchQuery] = useState('')
 
     const [localConnectingId, setlocalConnectingId] = useState<number | null>(null)
+
+
+    const observerTarget = useRef<HTMLDivElement>(null)
+
+
+    useEffect(()=>{
+
+    },[])
 
     const handleConnectRepo = (repo: Repository) => {
 
@@ -66,6 +75,7 @@ const RepositoryPage = () => {
 
             </div>
 
+        {isLoading && <RepositoryListSkeleton/>}
 
             <div className='grid gap-4'>
                 {filteredRepos.map((repo: Repository) => (
@@ -113,7 +123,16 @@ const RepositoryPage = () => {
                 ))}
             </div>
 
+            <div ref={observerTarget} className='py-4'>
+                {isFetchingNextPage && (
+                    <RepositoryListSkeleton />
+                )}
 
+                {!hasNextPage && allRepositories.length > 0 && (
+                    <p className='text-center text-muted-foreground'>No More Repositories Found...</p>
+                )}
+
+            </div>
         </div>
     )
 }
