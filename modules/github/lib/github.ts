@@ -81,3 +81,27 @@ export const fetchUserContribution = async (token: string, userName: string) => 
     }
 
 }
+
+
+
+export const getRepositories = async (page: number = 1, perPage: number = 10) => {
+    const token = await getGithubAccessToken()
+
+    const octokit = new Octokit({ auth: token })
+    try {
+        const { data } = await octokit.rest.repos.listForAuthenticatedUser({
+            sort: "updated",
+            direction: "desc",
+            visibility: "all",
+            per_page: perPage,
+            page: page
+        })
+
+        return data
+
+    } catch (error) {
+        console.error("Error fetching repositories:", error);
+        return [];
+    }
+
+}
