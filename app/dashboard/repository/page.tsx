@@ -84,6 +84,16 @@ const RepositoryPage = () => {
     )
 
 
+    if(isLoading){
+        return <RepositoryListSkeleton/>
+    }
+
+    if(isError){
+        return (
+            <p>Error Fetching Repositories</p>
+        )
+    }
+
     return (
         <div className="space-y-4">
             <div>
@@ -104,7 +114,7 @@ const RepositoryPage = () => {
 
             </div>
 
-            {isLoading && <RepositoryListSkeleton />}
+            
 
             <div className='grid gap-4'>
                 {filteredRepos.map((repo: Repository) => (
@@ -127,7 +137,7 @@ const RepositoryPage = () => {
                                         </a>
                                     </Button>
 
-                                    <Button
+                                    <Button className='cursor-pointer'
                                         disabled={localConnectingId == repo.id || repo.isConnected}
                                         onClick={() => handleConnectRepo(repo)}
                                         variant={repo.isConnected ? "outline" : "default"}>
