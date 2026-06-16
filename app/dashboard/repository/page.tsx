@@ -24,6 +24,9 @@ const RepositoryPage = () => {
         isConnected?: boolean
     }
 
+    const {
+        data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage
+    } = useRepositories()
 
     const [searchQuery, setsearchQuery] = useState('')
 
@@ -33,18 +36,44 @@ const RepositoryPage = () => {
     const observerTarget = useRef<HTMLDivElement>(null)
 
 
-    useEffect(()=>{
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+                fetchNextPage()
+            }
+            
 
-    },[])
+        },
+        {
+            threshold:0.1
+        }
+        )
+
+        const currentTarget=observerTarget.current
+        if(currentTarget){
+            observer.observe(currentTarget)
+        }
+
+        return ()=>{
+            if(currentTarget){
+                observer.unobserve(currentTarget)
+            }
+        }
+
+
+
+    }, [hasNextPage,isFetchingNextPage,fetchNextPage])
+
+
+
+
+    
 
     const handleConnectRepo = (repo: Repository) => {
 
     }
     1
 
-    const {
-        data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage
-    } = useRepositories()
 
 
     const allRepositories = data?.pages.flatMap((page) => page) || []
@@ -75,7 +104,7 @@ const RepositoryPage = () => {
 
             </div>
 
-        {isLoading && <RepositoryListSkeleton/>}
+            {isLoading && <RepositoryListSkeleton />}
 
             <div className='grid gap-4'>
                 {filteredRepos.map((repo: Repository) => (
