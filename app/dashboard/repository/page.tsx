@@ -2,10 +2,10 @@
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import useRepositories from '@/modules/repository/hooks/use-repositories'
-import { ExternalLink, Search } from 'lucide-react'
+import { ExternalLink, Search, Star } from 'lucide-react'
 import React, { useState } from 'react'
 
 
@@ -25,13 +25,13 @@ const RepositoryPage = () => {
 
 
     const [searchQuery, setsearchQuery] = useState('')
-    
+
     const [localConnectingId, setlocalConnectingId] = useState<number | null>(null)
 
-    const handleConnectRepo=()=>{
-        
+    const handleConnectRepo = (repo: Repository) => {
+
     }
-1
+    1
 
     const {
         data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage
@@ -70,13 +70,13 @@ const RepositoryPage = () => {
             <div className='grid gap-4'>
                 {filteredRepos.map((repo: Repository) => (
 
-                    <Card key={repo.id} className="hover :shadow-md transition-shadow">
+                    <Card key={repo.id} className="hover:shadow-md hover:-translate-y-0.5 transition-all duration-100">
                         <CardHeader>
                             <div className="flex items-start justify-between">
                                 <div className="space-y-2 flex-1">
                                     <div className="flex items-center gap-2">
-                                        <CardTitle className="text-1g">{repo.name}</CardTitle>
-                                        <Badge variant="outline">{repo.language || "Unknown"}</Badge>
+                                        <CardTitle className="text-lg font-semibold">{repo.name}</CardTitle>
+                                        <Badge variant="outline" className='font-mono'>{repo.language || "Unknown"}</Badge>
                                         {repo.isConnected && <Badge variant="secondary">Connected</Badge>}
                                     </div>
                                     <CardDescription>{repo.description}</CardDescription>
@@ -89,14 +89,25 @@ const RepositoryPage = () => {
                                     </Button>
 
                                     <Button
-                                    disabled={localConnectingId ==repo.id || repo.isConnected}
-                                    onClick={()=>handleConnectRepo()}
-                                    variant={repo.isConnected ? "outline" :"default"}>
+                                        disabled={localConnectingId == repo.id || repo.isConnected}
+                                        onClick={() => handleConnectRepo(repo)}
+                                        variant={repo.isConnected ? "outline" : "default"}>
                                         {localConnectingId === repo.id ? "Connecting ..." : repo.isConnected ? "Connected" : "Connect"}
                                     </Button>
                                 </div>
                             </div>
                         </CardHeader>
+
+                        <CardContent>
+                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                                <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-1">
+                                        <Star className="h-4 w-4 fill-primary text-primary" />
+                                        <span className="text-sm font-medium">{repo.stargazers_count}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </CardContent>
                     </Card>
 
                 ))}
