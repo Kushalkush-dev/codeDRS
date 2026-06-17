@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { RepositoryListSkeleton } from '@/modules/repository/components/RepositorySkeletonList'
+import { useConnectRepository } from '@/modules/repository/hooks/use-connect-repostories'
 import useRepositories from '@/modules/repository/hooks/use-repositories'
 import { ExternalLink, Search, Star } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
@@ -34,6 +35,8 @@ const RepositoryPage = () => {
 
 
     const observerTarget = useRef<HTMLDivElement>(null)
+
+    const {mutate:connectRepo}=useConnectRepository()
 
 
     useEffect(() => {
@@ -69,10 +72,24 @@ const RepositoryPage = () => {
 
     
 
-    const handleConnectRepo = (repo: Repository) => {
+    const handleConnectRepo = async(repo: Repository) => {
+
+        setlocalConnectingId(repo.id)
+
+         connectRepo({
+            owner:repo.full_name.split("/")[0],
+            repo:repo.name,
+            githubId:repo.id
+
+        },
+    {
+        onSettled:()=>{
+            setlocalConnectingId(null)
+        }
+    })
 
     }
-    1
+    
 
 
 
