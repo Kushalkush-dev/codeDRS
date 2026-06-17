@@ -107,29 +107,60 @@ export const getRepositories = async (page: number = 1, perPage: number = 10) =>
 }
 
 
-export const createWebHook=async(owner:string,repo:string)=>{
-    const token=await getGithubAccessToken()
-    const octokit=new  Octokit({auth:token})
+export const createWebHook = async (owner: string, repo: string) => {
+    const token = await getGithubAccessToken()
+    const octokit = new Octokit({ auth: token })
 
-    const webHookUrl=`${process.env.NEXT_PUBLIC_APP_BASE_URL}/api/webhooks/github`
-    const {data:hooks}= await octokit.rest.repos.listWebhooks({
-        owner:owner,
-        repo:repo
+    const webHookUrl = `${process.env.NEXT_PUBLIC_APP_BASE_URL}/api/webhooks/github`
+    const { data: hooks } = await octokit.rest.repos.listWebhooks({
+        owner: owner,
+        repo: repo
     })
-    const existingWebHook=hooks.find((hook)=>hook.config.url===webHookUrl)
+    const existingWebHook = hooks.find((hook) => hook.config.url === webHookUrl)
     if (existingWebHook) {
         return existingWebHook
     }
 
-    const {data}=await octokit.rest.repos.createWebhook({
+    const { data } = await octokit.rest.repos.createWebhook({
         owner,
         repo,
-        config:{
-            url:webHookUrl,
-            content_type:"json"
+        config: {
+            url: webHookUrl,
+            content_type: "json"
         },
-        events:["pull_request"]
+        events: ["pull_request"]
     })
 
     return data
+}
+
+
+export const deleteWebhook = async (owner: string, repo: string) => {
+    const token = await getGithubAccessToken()
+    const octokit = new Octokit({ auth: token })
+    const webHookUrl = `${process.env.NEXT_PUBLIC_APP_BASE_URL}/api/webhooks/github`
+
+    try {
+        const { data: hooks } = await octokit.rest.repos.listWebhooks({
+            owner,
+            repo
+        })
+        const hookToDelete = hooks.find((hook) => hook.config.url === webHookUrl)
+
+        if (hookToDelete) {
+            await octokit.rest.repos.deleteWebhook({
+                owner,
+                repo,
+                hook_id: hookToDelete.id
+            })
+
+            return true;
+        }
+
+        return false;
+    } catch (error) {
+        console.error("Failed to Delete Webhook", error);
+        return false
+
+    }
 }
