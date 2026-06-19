@@ -1,6 +1,8 @@
 import prisma from "@/lib/db";
 import { inngest } from "../client";
 import { getRepoFileContents } from "@/modules/github/lib/github";
+import { indexCodeBase } from "@/modules/ai/lib/rag";
+import { success } from "better-auth";
 
 export const indexRepo = inngest.createFunction(
   { id: "index-repo", triggers: { event: "repository.connected" } },
@@ -33,9 +35,18 @@ export const indexRepo = inngest.createFunction(
 
     //step2: Index the codebase/repo
 
-    const index = await step.run("index-codebase", async () => {
+    await step.run("index-codebase", async () => {
       // await indexCodebase
+
+      await indexCodeBase(`${owner}/${repo}`, files)
+
+
     })
+
+
+    return { success: true, filesIndexed: files.length }
+
+
   }
 
 
