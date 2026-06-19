@@ -1,10 +1,10 @@
-import {Pinecone} from "@pinecone-database/pinecone"
+import { Pinecone } from "@pinecone-database/pinecone"
 
 
-export const pinecone=new Pinecone({
-    apiKey:process.env.PINECONE_DB_API_KEY!
+export const pinecone = new Pinecone({
+    apiKey: process.env.PINECONE_DB_API_KEY!
 })
 
-export const pinconeIndex=pinecone.index("codedrs")
+export const pinconeIndex = pinecone.index({ name: "codedrs" })
 
 
