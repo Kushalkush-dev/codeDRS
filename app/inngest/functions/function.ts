@@ -3,10 +3,9 @@ import { inngest } from "../client";
 import { getRepoFileContents } from "@/modules/github/lib/github";
 
 export const indexRepo = inngest.createFunction(
-  { id: "index-repo" },
-  { event: "repository.connected" },
-
+  { id: "index-repo", triggers: { event: "repository.connected" } },
   async ({ event, step }) => {
+
 
 
     const { owner, repo, userId } = event.data
@@ -15,20 +14,22 @@ export const indexRepo = inngest.createFunction(
 
     const files = await step.run("fetch-files", async () => {
 
-      const account = prisma.account.findFirst({
+      const account = await prisma.account.findFirst({
         where: {
           userId: userId,
           providerId: "github"
         }
       })
 
-      if (!account.accessToken) {
+      if (!account?.accessToken) {
         throw new Error("No Github Access Token Found")
       }
 
+      return await getRepoFileContents(account.accessToken, owner, repo)
 
-     return await getRepoFileContents(account.accessToken,owner,repo)
     })
+
+
 
     //step2: Index the codebase/repo
 
