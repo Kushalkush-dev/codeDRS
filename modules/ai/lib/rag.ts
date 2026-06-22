@@ -8,8 +8,14 @@ import { pinconeIndex } from "@/lib/pinecone"
 export const generateEmbedding = async (text: string) => {
 
     const { embedding } = await embed({
-        model: google.embeddingModel("text-embedding-004"),
-        value: text
+        model: google.embeddingModel("gemini-embedding-001"),
+        value: text,
+        providerOptions: {
+            google: {
+                outputDimensionality: 768
+            }
+        },
+
     })
 
     return embedding
@@ -21,18 +27,15 @@ export const indexCodeBase = async (repoId: string, files: { path: string, conte
     const vectors = []
 
     for (const file of files) {
-
         const content = `File:${file.path}\n\n ${file.content}`
-
         const truncatedContent = content.slice(0, 8000)
 
         try {
-
-            const embededContent = await generateEmbedding(truncatedContent)
+            const embeddedContent = await generateEmbedding(truncatedContent)
 
             vectors.push({
                 id: `${repoId}-${file.path.replace(/\//g, '_')}`,
-                values: embededContent,
+                values: embeddedContent,
                 metadata: {
                     repoId,
                     path: file.path,
@@ -40,35 +43,28 @@ export const indexCodeBase = async (repoId: string, files: { path: string, conte
                 }
             })
         } catch (error) {
-            console.error("Failed to Embed", error);
+            console.error("Failed to Embed", error)
+        }
+    }
 
+    if (vectors.length === 0) {
+        console.warn(`No vectors generated for repo ${repoId}`)
+        return 0
+    }
+
+    const batchSize = 100
+
+    try {
+        for (let i = 0; i < vectors.length; i += batchSize) {
+            const batch = vectors.slice(i, i + batchSize)
+            await pinconeIndex.upsert({ records: batch })
         }
 
-        if (vectors.length > 0) {
-
-            const batchSize = 100;
-
-            try {
-
-                for (let i = 0; i < vectors.length; i += batchSize) {
-
-                    const batch = vectors.slice(i, i + batchSize);
-
-                    await pinconeIndex.upsert({ records: batch })
-
-
-                    console.log("CodeBase Index Completed");
-
-
-                }
-            } catch (error) {
-                console.error("Failed to Index the repo", error)
-            }
-
-        }
-
-
-
+        console.log(`CodeBase Index Completed for ${vectors.length} vectors`)
+        return vectors.length
+    } catch (error) {
+        console.error("Failed to Index the repo", error)
+        throw error
     }
 }
 

@@ -5,6 +5,6 @@ export const pinecone = new Pinecone({
     apiKey: process.env.PINECONE_DB_API_KEY!
 })
 
-export const pinconeIndex = pinecone.index({ name: "codedrs" })
+export const pinconeIndex = pinecone.index("codedrs")
 
 

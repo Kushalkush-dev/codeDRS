@@ -179,16 +179,15 @@ export const getRepoFileContents = async (
     })
 
     if (!Array.isArray(data)) {
-        //if its a single file
-
-        if (data.type == "file" && data.content) {
+        // if it's a single file
+        if (data.type === "file" && data.content) {
             return [{
                 path: data.path,
                 content: Buffer.from(data.content, "base64").toString("utf-8")
             }];
         }
 
-        return []
+        return [];
     }
 
     const files: { path: string, content: string }[] = [];
@@ -204,7 +203,7 @@ export const getRepoFileContents = async (
 
             if (!Array.isArray(fileData) && fileData.type === "file" && fileData.content) {
 
-                if (!item.path.match(/\.(png|jpg|svg|gif|mp4|ico|jpeg|pdf|zip|tar|gz)$/i)) {
+                if (!item.path.match(/\.(png|jpg|svg|gif|mp4|ico|jpeg|pdf|zip|tar|gz|webp|avif|mp3|mkv)$/i)) {
                     files.push({
                         path: item.path,
                         content: Buffer.from(fileData.content, "base64").toString("utf-8")
@@ -217,7 +216,9 @@ export const getRepoFileContents = async (
 
             const subFiles = await getRepoFileContents(token, owner, repo, item.path)
 
-            files.concat(subFiles)
+            if (Array.isArray(subFiles) && subFiles.length > 0) {
+                files.push(...subFiles);
+            }
 
 
         }

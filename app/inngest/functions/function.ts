@@ -36,7 +36,6 @@ export const indexRepo = inngest.createFunction(
     //step2: Index the codebase/repo
 
     await step.run("index-codebase", async () => {
-      // await indexCodebase
 
       await indexCodeBase(`${owner}/${repo}`, files)
 
