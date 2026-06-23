@@ -164,3 +164,118 @@ export const deleteWebhook = async (owner: string, repo: string) => {
 
     }
 }
+
+
+export const getRepoFileContents = async (
+    token: string, owner: string, repo: string, path: string = ""
+): Promise<{ path: string, content: string }[]> => {
+
+    const octokit = new Octokit({ auth: token })
+
+    const { data } = await octokit.rest.repos.getContent({
+        owner,
+        repo,
+        path
+    })
+
+    if (!Array.isArray(data)) {
+        // if it's a single file
+        if (data.type === "file" && data.content) {
+            return [{
+                path: data.path,
+                content: Buffer.from(data.content, "base64").toString("utf-8")
+            }];
+        }
+
+        return [];
+    }
+
+    const files: { path: string, content: string }[] = [];
+
+    for (const item of data) {
+        if (item.type === "file") {
+            const { data: fileData } = await octokit.rest.repos.getContent({
+                owner,
+                repo,
+                path: item.path
+            })
+
+
+            if (!Array.isArray(fileData) && fileData.type === "file" && fileData.content) {
+
+                if (!item.path.match(/\.(png|jpg|svg|gif|mp4|ico|jpeg|pdf|zip|tar|gz|webp|avif|mp3|mkv)$/i)) {
+                    files.push({
+                        path: item.path,
+                        content: Buffer.from(fileData.content, "base64").toString("utf-8")
+                    })
+                }
+
+            }
+        }
+        else if (item.type === "dir") {
+
+            const subFiles = await getRepoFileContents(token, owner, repo, item.path)
+
+            if (Array.isArray(subFiles) && subFiles.length > 0) {
+                files.push(...subFiles);
+            }
+
+
+        }
+    }
+
+    return files
+}
+
+
+export const getPullRequestDiff = async (token: string, owner: string, repo: string, prNumber: number) => {
+
+    const octokit = new Octokit({ auth: token })
+
+    const { data: pr } = await octokit.rest.pulls.get({
+        owner,
+        repo,
+        pull_number: prNumber
+    })
+
+    const { data: diff } = await octokit.rest.pulls.get({
+        owner,
+        repo,
+        pull_number: prNumber,
+        mediaType: {
+            format: "diff"
+        }
+    })
+
+    return {
+        diff: diff as unknown as string,
+        title: pr?.title,
+        description: pr?.body || ""
+    }
+}
+
+
+export const postReviewComment = async (
+    token: string,
+    owner: string,
+    repo: string,
+    prNumber: number,
+    review: string
+) => {
+
+    try {
+        const octokit = new Octokit({ auth: token })
+
+        await octokit.rest.issues.createComment({
+            owner,
+            repo,
+            issue_number: prNumber,
+            body: `##🤖🔎CodeDRS Review \n\n${review}\n\n---\n*Powered By CodeDRS `
+        })
+
+    } catch (error) {
+
+        console.error("Failed To Post Ai Review Comment to Github", error)
+
+    }
+}
