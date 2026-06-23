@@ -89,6 +89,8 @@ export const retriveContext = async (query: string, repoId: string, topK: number
 
             return results.matches.map((match) => match?.metadata?.content).filter(Boolean)
         }
+
+        
     } catch (error) {
         console.error("Failed to fetch Context", error)
     }
