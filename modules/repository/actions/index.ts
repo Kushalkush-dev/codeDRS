@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth"
 import { headers } from "next/headers";
 import { createWebHook, getRepositories } from "@/modules/github/lib/github";
 import { inngest } from "@/app/inngest/client";
+import { canConnectRepository, incrementRepositoryCount, decrementRepositoryCount } from "@/modules/subscription/lib/subscription";
 
 export const fetchRepositories = async (page: number = 1, perPage: number = 10) => {
     const session = await auth.api.getSession({
@@ -46,7 +47,14 @@ export const connectRepository = async (owner: string, repo: string, githubId: n
         throw new Error("Unauthorized")
     }
 
-    // Todo check if the user can connect more repos based on the subscription
+    // Todo: check if the user can connect more repos based on the subscription
+
+    const canConnect = await canConnectRepository(session.user.id)
+
+
+    if (!canConnect) {
+        throw new Error("Repository limit reached .Upgrade To Pro for Unlimited Repositories")
+    }
 
     const webHook = await createWebHook(owner, repo)
 
@@ -67,7 +75,7 @@ export const connectRepository = async (owner: string, repo: string, githubId: n
 
 
     // TODO: Increase Connected Repository Count For Tracking
-
+    await incrementRepositoryCount(session.user.id)
     // TODO:Triggering Repo Indexing for Rag 
 
     try {
@@ -82,8 +90,8 @@ export const connectRepository = async (owner: string, repo: string, githubId: n
         })
 
     } catch (error) {
-        console.error("Failed trigger repository indexing",error);
-        
+        console.error("Failed trigger repository indexing", error);
+
     }
 
 

@@ -13,16 +13,25 @@ model Test {
 }
 
 model User {
-  id            String       @id
+  id            String   @id
   name          String
   email         String
-  emailVerified Boolean      @default(false)
+  emailVerified Boolean  @default(false)
   image         String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  sessions      Session[]
-  accounts      Account[]
-  repositories  Repository[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  sessions     Session[]
+  accounts     Account[]
+  repositories Repository[]
+
+  userUsages         userUsage?
+  subscriptionTier   String     @default("FREE")
+  subscriptionStatus String? //ACTIVE,CANCELLED,EXPIRED
+
+  polarCustomerId String? @unique
+  polarSubscriptionId String? @unique
+  
 
   @@unique([email])
   @@map("user")
@@ -53,10 +62,25 @@ model Review {
   prTitle      String
   prUrl        String
   review       String     @db.Text
-  status       String     @default("completed")
+  status       String     @default("completed") //failed,pending,completed
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   repository   Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+
+  @@index([repositoryId])
+  @@map("review")
+}
+
+model userUsage {
+  id              String   @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  repositoryCount Int      @default(0)
+  reviewsCount    Json     @default("{}") //{"repoId:count"}
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("user_usage")
 }
 
 model Session {

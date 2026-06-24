@@ -3,7 +3,8 @@
 import { inngest } from "@/app/inngest/client"
 import prisma from "@/lib/db"
 import { getPullRequestDiff } from "@/modules/github/lib/github"
-import { success } from "better-auth"
+import { canCreateReview, incrementReviewCount } from "@/modules/subscription/lib/subscription"
+
 
 export const reviewPullRequest = async (
     owner: string,
@@ -35,6 +36,11 @@ export const reviewPullRequest = async (
             throw new Error(`Repository  ${owner}/${repo} not found in the Database .Try Reconnecting the Repo.`)
         }
 
+        const canReview = await canCreateReview(repository.user.id, repository.id)
+
+        if (!canReview) {
+            throw new Error("Reviews limit reached for this repository.Upgrade To Pro for Unlimited Reviews")
+        }
 
         const githubAccount = repository?.user?.accounts[0];
 
@@ -56,6 +62,8 @@ export const reviewPullRequest = async (
                 userId: repository.user.id
             }
         })
+
+        await incrementReviewCount(repository.user.id, repository.id)
 
         return { success: true, message: "Review Queued" }
 

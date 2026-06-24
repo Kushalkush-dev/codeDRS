@@ -53,7 +53,7 @@ const AppSidebar = () => {
         {
             title: "Subscriptions",
             icon: BookOpen,
-            url: "/dashboard/subscriptions"
+            url: "/dashboard/subscription"
 
         },
         {
@@ -149,7 +149,7 @@ const AppSidebar = () => {
                                 sideOffset={8}
                             >
                                 <div className="flex items-center gap-3 bg-sidebar-accent/30 p-3">
-                                    <Avatar className="h-0 w-12 rounded-full shrink-0">
+                                    <Avatar className="w-12 rounded-full shrink-0">
                                         <AvatarImage src={userImage || "/placeholder.svg"} alt={userName} />
                                         <AvatarFallback className="rounded-lg">{userInitials}</AvatarFallback>
                                     </Avatar>
