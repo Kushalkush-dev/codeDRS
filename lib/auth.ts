@@ -17,7 +17,7 @@ export const auth = betterAuth({
       scope: ["repo"]
     },
   },
-  trustedOrigins: ["http://localhost:3000", "https://nelson-terminatory-undilatorily.ngrok-free.dev"],
+  trustedOrigins: ["http://localhost:3000", process.env.NEXT_PUBLIC_APP_BASE_URL!],
   plugins: [
     polar({
       client: polarClient,
