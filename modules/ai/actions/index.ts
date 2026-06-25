@@ -2,7 +2,6 @@
 
 import { inngest } from "@/app/inngest/client"
 import prisma from "@/lib/db"
-import { getPullRequestDiff } from "@/modules/github/lib/github"
 import { canCreateReview, incrementReviewCount } from "@/modules/subscription/lib/subscription"
 
 
@@ -50,8 +49,6 @@ export const reviewPullRequest = async (
         }
 
         const token = githubAccount?.accessToken;
-
-        const { title, description } = await getPullRequestDiff(token, owner, repo, prNumber)
 
         await inngest.send({
             name: "pr.review.requested",

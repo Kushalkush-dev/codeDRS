@@ -34,13 +34,8 @@ export async function POST(req: NextRequest) {
             }
 
             if (action === "opened" || action === "synchronize") {
-                reviewPullRequest(owner, repoName, prNumber)
-                    .then(() => {
-                        console.log(`Review Completed for repo ${repo} #pr:${prNumber}`);
-                    })
-                    .catch((err) => {
-                        console.error(`Failed to complete review for repo ${repo} PR:${prNumber}`, err);
-                    });
+                const result = await reviewPullRequest(owner, repoName, prNumber);
+                console.log(`Review queued for repo ${repo} #pr:${prNumber}`, result);
             }
         }
 
