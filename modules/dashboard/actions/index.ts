@@ -72,14 +72,14 @@ export async function getDashboardStats() {
         // TODO: FETCH TOTAL CONNECTED REPO FROM DB;
         let totalRepos = 0;
 
-        const totalConnecetedRepos=await prisma.repository.findMany({
-            where:{
-                userId:session.user.id
+        const totalConnecetedRepos = await prisma.repository.findMany({
+            where: {
+                userId: session.user.id
             }
         })
 
-        if(totalConnecetedRepos?.length>0){
-            totalRepos=totalConnecetedRepos.length
+        if (totalConnecetedRepos?.length > 0) {
+            totalRepos = totalConnecetedRepos.length
         }
 
         //
@@ -95,7 +95,20 @@ export async function getDashboardStats() {
         const totalPRs = prs.total_count
 
         // TODO: COUNT AI REVIEWS FROM DATABASE
-        const totalReviews = 44
+        let totalReviews = 0
+
+        const totalAiReviews = await prisma.review.findMany({
+            where: {
+                repository: {
+                    userId: session.user.id
+                }
+
+            }
+        })
+
+        if (totalAiReviews?.length > 0) {
+            totalReviews = totalAiReviews.length
+        }
 
         return {
             totalCommits,
