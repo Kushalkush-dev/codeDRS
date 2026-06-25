@@ -258,4 +258,4 @@ Polar integration is wired through the `better-auth` Polar plugin for checkout, 
 
 ## License
 
-This repository is private by default. Add a license before distributing or open-sourcing the project.
+@Kushalkush-dev
