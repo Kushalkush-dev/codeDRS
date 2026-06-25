@@ -70,7 +70,17 @@ export async function getDashboardStats() {
         const { data: user } = await octokit.rest.users.getAuthenticated()
 
         // TODO: FETCH TOTAL CONNECTED REPO FROM DB;
-        const totalRepos = 30;
+        let totalRepos = 0;
+
+        const totalConnecetedRepos=await prisma.repository.findMany({
+            where:{
+                userId:session.user.id
+            }
+        })
+
+        if(totalConnecetedRepos?.length>0){
+            totalRepos=totalConnecetedRepos.length
+        }
 
         //
         const calendar = await fetchUserContribution(token, user.login);
