@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider"
 import QueryProvider from "@/components/query-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { Analytics } from "@vercel/analytics/next"
 
 
 const geistSans = Geist({
@@ -33,7 +34,9 @@ export default function RootLayout({
 
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <Analytics />
       <body suppressHydrationWarning className="min-h-full flex flex-col">
+
 
         <QueryProvider>
 
@@ -44,7 +47,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
-            <Toaster/>
+            <Toaster />
           </ThemeProvider>
 
         </QueryProvider>
