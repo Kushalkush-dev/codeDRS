@@ -142,19 +142,20 @@ const RepositoryPage = () => {
                                 <div className="space-y-2 flex-1">
                                     <div className="flex items-center gap-2">
                                         <CardTitle className="text-lg font-semibold">{repo.name}</CardTitle>
-                                        <Badge variant="outline" className='font-mono'>{repo.language || "Unknown"}</Badge>
-                                        {repo.isConnected && <Badge variant="secondary">Connected</Badge>}
+                                        <Badge variant="outline" className='font-mono max-sm:hidden'>{repo.language || "Unknown"}</Badge>
+                                        {repo.isConnected && <Badge variant="secondary" className='max-sm:hidden'>Connected</Badge>}
                                     </div>
-                                    <CardDescription>{repo.description}</CardDescription>
+                                    {repo.isConnected && <Badge variant="secondary" className='md:hidden ring-1 ring-primary'>Connected</Badge>}
+                                    <CardDescription className='max-sm:hidden'>{repo.description}</CardDescription>
                                 </div>
                                 <div className="flex gap-2">
                                     <Button variant="ghost" size="icon" asChild>
                                         <a href={repo.html_url} target="_blank" rel="noopener noreferrer">
-                                            <ExternalLink className="h-4 w-4" />
+                                            <ExternalLink className="h-4 w-4" />   
                                         </a>
                                     </Button>
 
-                                    <Button className='cursor-pointer'
+                                    <Button className={`cursor-pointer font-semibold ${localConnectingId === repo.id ? "" : repo.isConnected ? "ring-2 ring-primary" : ""}`}
                                         disabled={localConnectingId == repo.id || repo.isConnected}
                                         onClick={() => handleConnectRepo(repo)}
                                         variant={repo.isConnected ? "outline" : "default"}>
