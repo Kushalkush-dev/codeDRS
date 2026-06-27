@@ -106,7 +106,7 @@ const AppSidebar = () => {
                                     asChild
                                     tooltip={item.title}
                                     className={`h-11 px-4 rounded-lg transition-all duration-200 ${isActive(item.url)
-                                        ? "bg-sidebar-accent text-sidebar-accent-foreground font-semibold"
+                                        ? "bg-sidebar-accent text-sidebar-accent-foreground font-semibold ring-1 ring-primary"
                                         : "hover:bg-sidebar-accent/60 text-sidebar-foreground"}`}
                                 >
                                     <Link href={item.url} className="flex items-center gap-3">
