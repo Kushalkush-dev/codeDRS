@@ -21,7 +21,7 @@ const BrandMark = ({ className = "" }: { className?: string }) => (
     />
     <span className="text-2xl font-black tracking-normal">
       <span className="text-white">code</span>
-      <span className="bg-gradient-to-r from-[#D84A4E] to-[#7042C7] bg-clip-text text-transparent">
+      <span className="bg-gradient-to-r from-[#D84A4E] to-[#7042C7] bg-clip-text text-transparent ">
         DRS
       </span>
     </span>
@@ -53,7 +53,7 @@ const LoginUI = () => {
             <BrandMark />
 
             <div className="max-w-[720px]">
-              <h1 className="max-w-[680px] text-5xl font-black leading-[1.05] tracking-normal text-white xl:text-6xl">
+              <h1 className="max-w-[680px] text-5xl font-black leading-[1.05] tracking-normal text-white xl:text-6xl login-headline-reveal">
                 See the whole story behind every line of code.
               </h1>
               
@@ -66,14 +66,14 @@ const LoginUI = () => {
                 <div>
                   <p className="text-sm font-bold text-white">Repository intelligence</p>
                   <p className="mt-1 text-sm leading-6 text-white/55">
-                    Relevant files and project structure are pulled into every review.
+                    Repository context aware reviews. Accurate and precise
                   </p>
                 </div>
               </div>
               <div className="login-feature-card flex items-start gap-3">
                 <GitPullRequestArrow className="mt-0.5 size-5 text-[#D84A4E]" aria-hidden="true" />
                 <div>
-                  <p className="text-sm font-bold text-white">Webhook driven reviews</p>
+                  <p className="text-sm font-bold text-white">Event driven reviews</p>
                   <p className="mt-1 text-sm leading-6 text-white/55">
                     Pull requests are reviewed as soon as they open or update.
                   </p>
@@ -98,13 +98,13 @@ const LoginUI = () => {
 
               <div className="rounded-lg border border-white/10 bg-[#11101a]/88 p-6 shadow-2xl shadow-black/35 backdrop-blur sm:p-8">
                 <div className="mb-8">
-                  <p className="text-sm font-bold uppercase tracking-normal text-[#D84A4E]">
+                  <p className="text-sm font-bold uppercase tracking-normal text-[#D84A4E] login-headline-reveal">
                     Secure sign in
                   </p>
-                  <h2 className="mt-3 text-4xl font-black tracking-normal text-white">
+                  <h2 className="mt-3 text-4xl font-black tracking-normal text-white login-headline-reveal">
                     Welcome back
                   </h2>
-                  <p className="mt-4 text-base font-semibold leading-7 text-white/58">
+                  <p className="mt-4 text-base font-semibold leading-7 text-white/58 login-headline-reveal">
                     Continue with GitHub to open your code review workspace.
                   </p>
                 </div>
@@ -113,7 +113,8 @@ const LoginUI = () => {
                   type="button"
                   onClick={handleGithubSignin}
                   disabled={isLoading}
-                  className="h-14 w-full cursor-pointer rounded-lg border border-white/10 bg-gradient-to-r from-[#D84A4E] to-[#7042C7] text-base font-black text-white shadow-lg shadow-[#411C83]/30 hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
+                  className="h-14 w-full cursor-pointer rounded-lg border border-white/10 bg-gradient-to-r from-[#D84A4E] to-[#7042C7] text-base font-black 
+                  text-white shadow-lg shadow-[#411C83]/30 hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70 githhub-login-btn"
                 >
                   <FaGithub className="mr-3 size-5" aria-hidden="true" />
                   {isLoading ? "Connecting..." : "Continue with GitHub"}
@@ -121,17 +122,17 @@ const LoginUI = () => {
 
                 <div className="mt-6 flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.035] px-4 py-3">
                   <ShieldCheck className="size-5 shrink-0 text-[#D84A4E]" aria-hidden="true" />
-                  <p className="text-sm font-semibold leading-6 text-white/58">
+                  <p className="text-sm font-semibold leading-6 text-white/58 login-headline-reveal">
                     GitHub access powers repository sync, webhooks, and review comments.
                   </p>
                 </div>
 
                 <div className="mt-8 flex items-center justify-center gap-5 text-xs font-semibold text-white/42">
-                  <Link href="#" className="hover:text-white">
+                  <Link href="#" className="hover:text-white login-headline-reveal">
                     Terms
                   </Link>
                   <span className="size-1 rounded-full bg-white/18" />
-                  <Link href="#" className="hover:text-white">
+                  <Link href="#" className="hover:text-white login-headline-reveal">
                     Privacy
                   </Link>
                 </div>
