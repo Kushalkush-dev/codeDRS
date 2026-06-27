@@ -14,6 +14,7 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    useSidebar,
 } from "@/components/ui/sidebar"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -28,7 +29,7 @@ const AppSidebar = () => {
 
     const isDark = resolvedTheme === "dark"
 
-
+const {isMobile,setOpenMobile}=useSidebar()
 
     const navigationItems = [
 
@@ -66,6 +67,10 @@ const AppSidebar = () => {
 
     const isActive = (url: string) => {
         return pathname == url || pathname.startsWith(url + "/dashboard")
+    }
+
+    const handleNavigate=()=>{
+        if(isMobile) setOpenMobile(false)
     }
 
     if (!session) return null
@@ -109,7 +114,7 @@ const AppSidebar = () => {
                                         ? "bg-sidebar-accent text-sidebar-accent-foreground font-semibold ring-1 ring-primary"
                                         : "hover:bg-sidebar-accent/60 text-sidebar-foreground"}`}
                                 >
-                                    <Link href={item.url} className="flex items-center gap-3">
+                                    <Link href={item.url} className="flex items-center gap-3" onClick={handleNavigate}>
                                         <item.icon className="w-5 h-5 shrink-0" />
                                         <span className="text-sm font-medium">{item.title}</span>
                                     </Link>
