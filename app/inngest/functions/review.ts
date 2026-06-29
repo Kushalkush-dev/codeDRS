@@ -4,6 +4,7 @@ import { google } from "@ai-sdk/google"
 import { generateText } from "ai"
 import { getPullRequestDiff, postReviewComment } from "@/modules/github/lib/github";
 import { retriveContext } from "@/modules/ai/lib/rag";
+import { buildReviewPrompt } from "@/modules/ai/lib/review-presets";
 
 
 export const generateReview = inngest.createFunction(
@@ -17,7 +18,7 @@ export const generateReview = inngest.createFunction(
     async ({ event, step }) => {
         const { owner, repo, prNumber, userId } = event.data
 
-        const { diff, title, description, token } = await step.run("fecth-pr-data", async () => {
+        const { diff, title, description, token, reviewPreset } = await step.run("fecth-pr-data", async () => {
 
             const account = await prisma.account.findFirst({
                 where: {
@@ -31,8 +32,20 @@ export const generateReview = inngest.createFunction(
             }
 
             const data = await getPullRequestDiff(account.accessToken, owner, repo, prNumber);
+
+            const user = await prisma.user.findUnique({
+                where: {
+                    id: userId
+                },
+                select: {
+                    reviewPreset: true
+                }
+            })
+
             return {
-                ...data, token: account.accessToken
+                ...data,
+                token: account.accessToken,
+                reviewPreset: user?.reviewPreset
             }
         })
 
@@ -42,30 +55,15 @@ export const generateReview = inngest.createFunction(
             return await retriveContext(query, `${owner}/${repo}`)
         }) ?? []
 
+        const reviewContext = context.filter((item): item is string => typeof item === "string")
+
         const AiReview = await step.run("generate-review", async () => {
-            const prompt = `You are an expert code reviewer. Analyze the following pull request and provide a detailed, constructive code review.
-
-PR Title: ${title}
-PR Description: ${description || "No description provided"}
-
-Context from Codebase:
-${context.join("\n\n")}
-
-Code Changes:
-\`\`\`diff
-${diff}
-\`\`\`
-
-Please provide:
-1. **Walkthrough**: A file-by-file explanation of the changes.
-2. **Sequence Diagram**: A Mermaid JS sequence diagram visualizing the flow of the changes (if applicable). Use \`\`\`mermaid ... \`\`\` block. **IMPORTANT**: Ensure the Mermaid syntax is valid. Do not use special characters (like quotes, braces, parentheses) inside Note text or labels as it breaks rendering. Keep the diagram simple.
-3. **Summary**: Brief overview.
-4. **Strengths**: What's done well.
-5. **Issues**: Bugs, security concerns, code smells.
-6. **Suggestions**: Specific code improvements.
-7. **Poem**: A short, creative poem summarizing the changes at the very end.
-
-Format your response in markdown.`
+            const prompt = buildReviewPrompt(reviewPreset, {
+                title,
+                description,
+                context: reviewContext,
+                diff
+            })
 
 
             const { text } = await generateText({

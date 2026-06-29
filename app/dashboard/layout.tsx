@@ -17,7 +17,7 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
                         <SidebarTrigger className="-ml-1" />
                         <Separator orientation="vertical" className="mx-2 h-4" />
                         <span className="text-xl font-black tracking-normal">
-                            <span className="text-white">code</span>
+                            <span className="dark:text-white text-gray-600 ">code</span>
                             <span className="bg-gradient-to-r from-[#D84A4E] to-[#7042C7] bg-clip-text text-transparent ">
                                 DRS
                             </span>

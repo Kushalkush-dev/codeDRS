@@ -29,7 +29,7 @@ const AppSidebar = () => {
 
     const isDark = resolvedTheme === "dark"
 
-const {isMobile,setOpenMobile}=useSidebar()
+    const { isMobile, setOpenMobile } = useSidebar()
 
     const navigationItems = [
 
@@ -69,8 +69,8 @@ const {isMobile,setOpenMobile}=useSidebar()
         return pathname == url || pathname.startsWith(url + "/dashboard")
     }
 
-    const handleNavigate=()=>{
-        if(isMobile) setOpenMobile(false)
+    const handleNavigate = () => {
+        if (isMobile) setOpenMobile(false)
     }
 
     if (!session) return null
@@ -134,8 +134,8 @@ const {isMobile,setOpenMobile}=useSidebar()
                             <DropdownMenuTrigger asChild>
                                 <SidebarMenuButton
                                     size="lg"
-                                    className="h-12 px-4 rounded-lg data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:bg-sidebar-accent/50 transition-colors flex items-center gap-3"
-                                >
+                                    className="h-12 px-4 cursor-pointer hover:scale-105 transition-all rounded-lg data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:bg-sidebar-accent/50 flex items-center gap-3"
+                               >
                                     <Avatar className="h-10 w-10 rounded-lg shrink-0">
                                         <AvatarImage src={userImage || "/placeholder.svg"} alt={userName} />
                                         <AvatarFallback className="rounded-lg">{userInitials}</AvatarFallback>
