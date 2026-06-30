@@ -4,8 +4,8 @@ import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 import prisma from "@/lib/db"
 import { revalidatePath } from "next/cache"
-import { promise, success } from "better-auth"
 import { deleteWebhook } from "@/modules/github/lib/github"
+import { isReviewPresetId, resolveReviewPresetId, type ReviewPresetId } from "@/modules/ai/lib/review-presets"
 
 
 
@@ -84,6 +84,74 @@ export async function updateUSerProfile(data: { name?: string, email?: string })
     }
 
 
+}
+
+export async function getReviewPreferences() {
+
+    try {
+        const session = await auth.api.getSession({
+            headers: await headers(),
+        });
+
+        if (!session?.user) {
+            throw new Error("Unauthorized");
+        }
+
+        const user = await prisma.user.findUnique({
+            where: {
+                id: session.user.id
+            },
+            select: {
+                reviewPreset: true
+            }
+        })
+
+        return {
+            reviewPreset: resolveReviewPresetId(user?.reviewPreset)
+        }
+    } catch (error) {
+        console.error("Error fetching review preferences", error);
+        return null
+    }
+}
+
+export async function updateReviewPreferences(data: { reviewPreset: ReviewPresetId }) {
+
+    try {
+        const session = await auth.api.getSession({
+            headers: await headers(),
+        });
+
+        if (!session?.user) {
+            throw new Error("Unauthorized");
+        }
+
+        if (!isReviewPresetId(data.reviewPreset)) {
+            return { success: false, error: "Invalid review preset" }
+        }
+
+        const user = await prisma.user.update({
+            where: {
+                id: session.user.id
+            },
+            data: {
+                reviewPreset: data.reviewPreset
+            },
+            select: {
+                reviewPreset: true
+            }
+        })
+
+        revalidatePath("/dashboard/settings", "page");
+
+        return {
+            success: true,
+            reviewPreset: resolveReviewPresetId(user.reviewPreset)
+        }
+    } catch (error) {
+        console.error("Error updating review preferences", error);
+        return { success: false, error: "Failed to update review preferences" }
+    }
 }
 
 export async function getConnectedRepositories() {

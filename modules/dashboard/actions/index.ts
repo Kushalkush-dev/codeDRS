@@ -190,26 +190,41 @@ export async function getMonthlyActivity() {
         sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
 
-        // TODO: REVIEWS'S REAL DATA
-        const generateSampleReviews = () => {
-            const sampleReviews = [];
+        // TODO: Monthly AI REVIEWS'S REAL DATA
+        const generateSampleReviews = async () => {
+            let sampleReviews = [];
             const now = new Date();
 
-            // Generate random reviews over the past 6 months
-            for (let i = 0; i < 45; i++) {
-                const randomDaysAgo = Math.floor(Math.random() * 180); // Random day in last 6 months
-                const reviewDate = new Date(now);
-                reviewDate.setDate(reviewDate.getDate() - randomDaysAgo);
+            // // Generate random reviews over the past 6 months
+            // for (let i = 0; i < 45; i++) {
+            //     const randomDaysAgo = Math.floor(Math.random() * 180); // Random day in last 6 months
+            //     const reviewDate = new Date(now);
+            //     reviewDate.setDate(reviewDate.getDate() - randomDaysAgo);
 
-                sampleReviews.push({
-                    createdAt: reviewDate,
-                });
-            }
+            //     sampleReviews.push({
+            //         createdAt: reviewDate,
+            //     });
+            // }
+
+
+
+            const datedAiReviews = await prisma.review.findMany({
+                where: {
+                    repository: {
+                        userId: session.user.id
+                    }
+                },
+                select: {
+                    createdAt: true
+                }
+            })
+
+            sampleReviews = datedAiReviews
 
             return sampleReviews;
         };
 
-        const reviews = generateSampleReviews()
+        const reviews = await generateSampleReviews()
 
         reviews.forEach((review) => {
             const monthKey = monthNames[review.createdAt.getMonth()];

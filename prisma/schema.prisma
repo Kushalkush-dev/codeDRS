@@ -28,6 +28,7 @@ model User {
   userUsages         userUsage?
   subscriptionTier   String     @default("FREE")
   subscriptionStatus String? //ACTIVE,CANCELLED,EXPIRED
+  reviewPreset       String     @default("balanced")
 
   polarCustomerId String? @unique
   polarSubscriptionId String? @unique
