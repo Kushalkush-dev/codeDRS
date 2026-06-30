@@ -195,7 +195,7 @@ const AppSidebar = () => {
                                         variant="destructive"
                                         className="h-10 cursor-pointer gap-3 rounded-md px-3 text-sm font-medium"
                                     >
-                                        <Logout className="flex w-full items-center gap-3 hover:bg-red-600">
+                                        <Logout className="flex w-full items-center gap-3 hover:text-white hover:bg-red-600">
                                             <LogOutIcon className="h-4 w-4 shrink-0" />
                                             <span >Sign Out</span>
                                         </Logout>

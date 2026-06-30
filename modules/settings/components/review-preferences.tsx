@@ -100,7 +100,7 @@ const ReviewPreferences = () => {
                         ))}
                     </RadioGroup>
 
-                    <Button type="submit" disabled={updateMutation.isPending}>
+                    <Button type="submit" disabled={updateMutation.isPending} className="dark:text-white font-mono ">
                         {updateMutation.isPending ? "Saving ... " : "Save Preferences"}
                     </Button>
                 </form>
