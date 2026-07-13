@@ -19,8 +19,8 @@ const SubscriptionPage = () => {
 
     const PLAN_FEATURES = {
         free: [
-            { name: "Up to 5 repositories", included: true },
-            { name: "Up to 5 reviews per repository", included: true },
+            { name: "Up to 1 repositories", included: true },
+            { name: "Up to 3 reviews per repository", included: true },
             { name: "Basic code reviews", included: true },
             { name: "Community support", included: true },
             { name: "Advanced analytics", included: false },
@@ -56,15 +56,17 @@ const SubscriptionPage = () => {
 
         if (success === "true") {
 
-            const sync = async () => {
-                try {
+            try {
+                const sync = async () => {
+
                     await syncSubscriptionStatus()
                     refetch()
-                } catch (error) {
-                    console.error("Failed to sync Subscription on success return", error)
+
                 }
+                sync()
+            } catch (error) {
+                console.error("Failed to sync Subscription on success return", error)
             }
-            sync()
 
         }
 
@@ -122,7 +124,8 @@ const SubscriptionPage = () => {
                 toast.success("Subscription status updated")
                 refetch()
             } else {
-                toast.error(result.message || result.error || "Failed To Sync Subscription")
+                toast.error("Failed To Sync Subscription",)
+
             }
         } catch (error) {
             toast.error("Failed To Sync Subscription")

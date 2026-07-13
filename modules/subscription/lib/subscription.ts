@@ -24,8 +24,8 @@ export interface UserLimits {
 
 const TIER_LIMITS = {
     FREE: {
-        repositories: 5,
-        reviewsPerRepo: 5,
+        repositories: process.env.REPO_LIMIT_FREE ? parseInt(process.env.REPO_LIMIT_FREE) : 1,
+        reviewsPerRepo: process.env.REVIEWS_PER_REPO_LIMIT_FREE ? parseInt(process.env.REVIEWS_PER_REPO_LIMIT_FREE) : 3,
     },
     PRO: {
         repositories: null, // unlimited
