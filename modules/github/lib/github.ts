@@ -270,7 +270,7 @@ export const postReviewComment = async (
             owner,
             repo,
             issue_number: prNumber,
-            body: `<img src="https://delivery.pixelbin.io/predictions/outputs/1d/nanoBanana/generate/019f1353-ba66-7555-95e0-081e0ae0c8c7/result_0.png" width="80" alt="CodeDRS Review Image">\n\nCodeDRS Review \n\n${review}\n\n---\n*Powered By CodeDRS*`
+            body: `<img src="https://drive.google.com/thumbnail?id=1UR3A4WAlSQmGBX_7pWCtYWHvtyn-mtZe&sz=w1000" width="80" alt="CodeDRS Review Image">\n\nCodeDRS Review \n\n${review}\n\n---\n*Powered By CodeDRS*`
             
         })
 
