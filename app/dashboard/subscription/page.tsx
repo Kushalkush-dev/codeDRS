@@ -143,7 +143,7 @@ const SubscriptionPage = () => {
             setCheckoutLoading(true)
 
             await checkout({
-                slug: "pro"
+                slug: "codedrs-prod", // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
             })
 
         } catch (error) {

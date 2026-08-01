@@ -1,0 +1,5 @@
+cors origin setup in next.config.ts
+
+update polar webhook from ngrok to deployed url
+
+update github callback url to deployed app url
