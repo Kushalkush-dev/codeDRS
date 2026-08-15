@@ -34,7 +34,22 @@ const TIER_LIMITS = {
 } as const;
 
 
+const DEVELOPER_USER_IDS = new Set(
+    (process.env.DEVELOPER_USER_IDS || "")
+        .split(",")
+        .map((id) => id.trim())
+        .filter(Boolean),
+);
+
+export async function isDeveloperUser(userId: string): Promise<boolean> {
+    return DEVELOPER_USER_IDS.has(userId);
+}
+
 export async function getUserTier(userId: string): Promise<SubscriptionTier> {
+    if (await isDeveloperUser(userId)) {
+        return "PRO";
+    }
+
     const user = await prisma.user.findUnique({
         where: { id: userId },
         select: { subscriptionTier: true },

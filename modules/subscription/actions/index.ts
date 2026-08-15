@@ -1,7 +1,7 @@
 "use server"
 
 import { auth } from "@/lib/auth";
-import { getRemainingLimits, updatePolarCustomerId, updateUserTier } from "@/modules/subscription/lib/subscription";
+import { getRemainingLimits, getUserTier, updatePolarCustomerId, updateUserTier } from "@/modules/subscription/lib/subscription";
 import { headers } from "next/headers";
 import { polarClient } from "@/modules/subscription/config/polar";
 import prisma from "@/lib/db";
@@ -58,6 +58,7 @@ export async function getSubscriptionData(): Promise<SubscriptionData> {
         return { user: null, limits: null };
     }
 
+    const tier = await getUserTier(user.id);
     const limits = await getRemainingLimits(user.id);
 
     return {
@@ -65,8 +66,10 @@ export async function getSubscriptionData(): Promise<SubscriptionData> {
             id: user.id,
             name: user.name,
             email: user.email,
-            subscriptionTier: user.subscriptionTier || "FREE",
-            subscriptionStatus: user.subscriptionStatus || null,
+            subscriptionTier: tier,
+            subscriptionStatus: tier === "PRO"
+                ? "ACTIVE"
+                : user.subscriptionStatus || null,
             polarCustomerId: user.polarCustomerId || null,
             polarSubscriptionId: user.polarSubscriptionId || null,
         },

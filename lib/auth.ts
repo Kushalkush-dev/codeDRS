@@ -26,8 +26,8 @@ export const auth = betterAuth({
         checkout({
           products: [
             {
-              productId: "a10bf18c-d5d4-4256-9863-240a89bc36e7", // ID of Product from Polar Dashboard
-              slug: "codedrs" // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
+              productId: process.env.POLAR_PRODUCT_ID!, // ID of Product from Polar Dashboard
+              slug: "codedrs-prod" // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
             }
           ],
           successUrl: process.env.POLAR_SUCCESS_URL || "http://localhost:3000/dashboard/subscription?success=true",
