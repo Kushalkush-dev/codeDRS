@@ -14,7 +14,7 @@ const Logout = ({ children, className }: {
         <button className={className} onClick={() => signOut({
             fetchOptions: {
                 onSuccess: () => {
-                    router.push("/login")
+                    router.push("/")
                 }
             }
         })}>
